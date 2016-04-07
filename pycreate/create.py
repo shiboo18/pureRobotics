@@ -53,7 +53,7 @@ import _thread # thread libs needed to lock serial port during transmissions
 from threading import *
 
 # The Create's baudrate and timeout:
-baudrate = 57600
+baudrate = 115200
 timeout = 0.5
 
 # some module-level definitions for the robot commands
@@ -355,14 +355,14 @@ class Create:
             else:
                 # for Mac/Linux - use whole port name
                 # print 'In Mac/Linux mode...'
-                self.ser = serial.Serial(PORT, baudrate=57600, timeout=0.5)
+                self.ser = serial.Serial(PORT, baudrate=115200, timeout=0.5)
         # otherwise, we try to open the numeric serial port...
                 if (sim_mode):
                     self.init_sim_mode()
         else:
             # print 'In Windows mode...'
             try:
-                self.ser = serial.Serial(PORT-1, baudrate=57600, timeout=0.5)
+                self.ser = serial.Serial(PORT-1, baudrate=115200, timeout=0.5)
                 if (sim_mode):
                     self.init_sim_mode()
             except serial.SerialException:
@@ -379,7 +379,7 @@ class Create:
             print('  - physical connection')
             print('  - baud rate of the roomba (it\'s _possible_, if unlikely,')
             print('              that it might be set to 19200 instead')
-            print('              of the default 57600 - removing and')
+            print('              of the default 115200 - removing and')
             print('              reinstalling the battery should reset it.')
         
         # define the class' Open Interface mode
@@ -1040,11 +1040,11 @@ class Create:
             to SAFE_MODE
         """
         self.start()
-        time.sleep(0.03)
+        time.sleep(0.5)
         # now we're in PASSIVE_MODE, so we repeat the above code...
         self.send( SAFE )
         # they recommend 20 ms between mode-changing commands
-        time.sleep(0.03)
+        time.sleep(0.5)
         # change the mode we think we're in...
         self.sciMode = SAFE_MODE
         # no response here, so we don't get any...
