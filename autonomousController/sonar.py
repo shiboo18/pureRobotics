@@ -1,6 +1,6 @@
 import RPi.GPIO as GPIO
 import time
-import utilities
+
 import threading
 
 '''

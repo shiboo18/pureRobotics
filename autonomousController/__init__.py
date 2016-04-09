@@ -1,3 +1,5 @@
+__all__ = ['camera', 'sonar']
+
 import sys
 sys.path.append('/home/pi')
 
@@ -8,9 +10,10 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 import random
 import string
 import cv2
-from camera import Camera
+from autonomousController import *
 
 import cherrypy
+from cherrypy.lib.static import serve_file
 
 class autonomousController(object):
 
@@ -25,13 +28,39 @@ class autonomousController(object):
     cherrypy.engine.exit()
     piCam.stop()
 
+  @cherrypy.expose
+  def index(self):
+	  return serve_file(os.path.join(current_dir, 'webfiles/html', 'index.html'),
+	  	content_type='text/html')
 
 
-piCam = Camera()
+
+piCam = camera.Camera()
 
 piCam.start()
 
+print(current_dir)
+
 cherrypy.server.socket_host = '0.0.0.0'
-cherrypy._cpconfig.Config(file="cherrypyConfig.conf")
-cherrypy.quickstart(autonomousController())
+# cherrypy._cpconfig.Config(file= current_dir + "/cherrypyConfig.conf")
+
+conf = {
+        '/':
+        {'tools.staticdir.root': os.path.dirname(os.path.abspath(__file__))},
+          '/js': {
+          	'tools.staticdir.on': True,
+          	'tools.staticdir.dir': os.path.join(os.path.dirname(os.path.abspath(__file__)), 'webfiles/js/')
+          	},
+          '/css': {
+          	'tools.staticdir.on': True,
+          	'tools.staticdir.dir': os.path.join(os.path.dirname(os.path.abspath(__file__)), 'webfiles/css/')
+          	},
+          '/html': {
+          	'tools.staticdir.on': True,
+          	'tools.staticdir.dir': os.path.join(os.path.dirname(os.path.abspath(__file__)), 'webfiles/html/')
+          	}
+        
+      }
+
+cherrypy.quickstart(autonomousController(), config=conf)
 
