@@ -2,6 +2,7 @@ import RPi.GPIO as GPIO
 import time
 
 import threading
+from autonomousController import utilities
 
 '''
 Sonoar class manages reading distance information from a sonar sensor connected to TRIG and ECHO gpio
@@ -9,7 +10,7 @@ pins on a Raspberry Pi.  Tested on Raspberry Pi Model B
 @input trig [number GPIO pin using GPIO.BCM mode] [represents pin connected to sonar trigger]
 @input echo [number GPIO pin using GPIO.BCM mode] [represents pin connected to sonar echo]
 '''
-class sonar(threading.Thread):
+class Sonar(threading.Thread):
 
 	def __init__(self, trig, echo, senseDelay=0.001):
 		self.TRIG = trig
@@ -64,6 +65,7 @@ class sonar(threading.Thread):
 	def run(self):
 		while self.exitFlag == False:
 			self.currentDistance = self.getMeasurement()
+			utilities.log("sonar distance " + str(self.currentDistance))
 			time.sleep(self.senseDelay)
 
 		GPIO.cleanup()
@@ -74,7 +76,7 @@ class sonar(threading.Thread):
 
 
 if __name__ == '__main__':
-	sonar1 = sonar(trig=23, echo=24)
+	sonar1 = Sonar(trig=23, echo=24)
 	sonar1.start()
 	lim=0
 	while lim<100:

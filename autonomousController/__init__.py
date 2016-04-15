@@ -19,9 +19,16 @@ class autonomousController(object):
 
   @cherrypy.expose
   def getImage(self, random):
-      print(piCam.image)
+      # print(piCam.image)
       cherrypy.response.headers['Content-Type'] = 'image/jpeg'
       return cv2.imencode('.jpg', piCam.image)[1].tostring()
+
+  @cherrypy.expose
+  def getSensor(self, sensor):
+    if sensor == "sonar":
+      return str(sonar1.currentDistance)
+
+
 
   @cherrypy.expose
   def cleanslateprotocol(self):
@@ -38,6 +45,9 @@ class autonomousController(object):
 piCam = camera.Camera()
 
 piCam.start()
+
+sonar1 = sonar.Sonar(trig=23, echo=24)
+sonar1.start()
 
 print(current_dir)
 

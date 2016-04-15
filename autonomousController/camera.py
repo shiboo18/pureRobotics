@@ -6,6 +6,9 @@ from picamera import PiCamera
 import time
 import cv2
 import threading
+from autonomousController.detect_lane_houghlinesP import *
+from autonomousController.config_lane import *
+from autonomousController import utilities
  
 class Camera(threading.Thread):
 
@@ -13,6 +16,7 @@ class Camera(threading.Thread):
 		
 		
 		self.image = []
+		self.roadAngle = 0
 		
 		# initialize the camera and grab a reference to the raw camera capture
 		self.camera = PiCamera()
@@ -37,6 +41,12 @@ class Camera(threading.Thread):
 		 
 			# show the frame
 			# cv2.imshow("Frame", image)
+			gb_lane_cfg = LaneCfg
+			proc = {'houghlinesP':detect_lane_over_houghlinesP}
+			self.angle = proc[gb_lane_cfg['set']['proc']](gb_lane_cfg['set']['proc'], self.image, gb_lane_cfg)
+
+
+			utilities.log("angle " + str(self.angle))
 		 
 			# clear the stream in preparation for the next frame
 			self.rawCapture.truncate(0)

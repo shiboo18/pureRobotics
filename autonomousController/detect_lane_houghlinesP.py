@@ -48,14 +48,14 @@ def detect_lane_over_houghlinesP(name, img, cfg):
 				mainLineY2 = mainLineY2 + y2
 				dx, dy = x2 - x1, y2 - y1
 				angle = np.arctan2(dy, dx) * cfg['filter']['invtheta']
-				print np.arctan2(dy, dx)
-				if angle <= cfg['filter']['angle']	and angle >= - cfg['filter']['angle']:
-					return img
+				# print(np.arctan2(dy, dx))
+				# if angle <= cfg['filter']['angle']	and angle >= - cfg['filter']['angle']:
+				# 	return None
 				cv2.line(img, (x1,y1), (x2,y2), cfg['color']['green'], 2)
 		dx, dy = mainLineX2 - mainLineX1, mainLineY1 - mainLineY2
 		angle = np.arctan2(dy, dx) * cfg['filter']['invtheta']
-		print angle
-		return img
+		# print(angle)
+		return angle
 
 	def _show(img):
 		""" show img """
@@ -68,11 +68,11 @@ def detect_lane_over_houghlinesP(name, img, cfg):
 
 	def _debug_draw(edge, lines, cfg):
 		""" debug with draw """
-		print ""
+		print("")
 		
 		img = cv2.cvtColor(edge, cv2.COLOR_GRAY2BGR)
 		for line in lines:
-			#print json.dumps(line)
+			#print(json).dumps(line)
 			for obj in line:
 				[x1, y1, x2, y2] = obj
 				dx, dy = x2 - x1, y2 - y1
@@ -93,16 +93,16 @@ def detect_lane_over_houghlinesP(name, img, cfg):
 	edge = _prepare(img.copy(), cfg)
 	
 	lines = _detect(edge, cfg)
-	print lines;
+	# print(lines)
 
 	if cfg['set']['show'] not in [None, False]:
-		img = _draw(img, lines, cfg)
+		angle = _draw(img, lines, cfg)
 		#_show(img)
 		# _debug_show(edge)
 	# if cfg['set']['debug'] not in [None, False]:
 	# 	edge = _debug_draw(edge, lines, cfg)
 	# 	_debug_show(edge)
 
-	return img
+	return angle
 
 
