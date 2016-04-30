@@ -16,7 +16,7 @@ class Camera(threading.Thread):
 		
 		
 		self.image = []
-		self.roadAngle = 0
+		self.angle = 0
 		
 		# initialize the camera and grab a reference to the raw camera capture
 		self.camera = PiCamera()
@@ -46,7 +46,7 @@ class Camera(threading.Thread):
 			self.angle = proc[gb_lane_cfg['set']['proc']](gb_lane_cfg['set']['proc'], self.image, gb_lane_cfg)
 
 
-			utilities.log("angle " + str(self.angle))
+			#utilities.log("angle " + str(self.angle))
 		 
 			# clear the stream in preparation for the next frame
 			self.rawCapture.truncate(0)

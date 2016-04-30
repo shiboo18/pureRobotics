@@ -1,19 +1,20 @@
-__all__ = ['camera', 'sonar']
+__all__ = ['camera', 'sonar', 'control']
 
 import sys
 sys.path.append('/home/pi')
-
+sys.path.append('./pycreate')
+import create
 import os.path
-current_dir = os.path.dirname(os.path.abspath(__file__))
-
-
 import random
 import string
 import cv2
 from autonomousController import *
-
 import cherrypy
 from cherrypy.lib.static import serve_file
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
+
+serialPort = '/dev/ttyUSB0'
 
 class autonomousController(object):
 
@@ -27,6 +28,17 @@ class autonomousController(object):
   def getSensor(self, sensor):
     if sensor == "sonar":
       return str(sonar1.currentDistance)
+
+
+  @cherrypy.expose
+  def move(self, num):
+    #print("test " + str(num))
+    robotController.changeVel(int(num))
+
+  @cherrypy.expose
+  def turn(self, num):
+    #print("test " + str(num))
+    robotController.changeTurn(int(num))
 
 
 
@@ -49,11 +61,18 @@ piCam.start()
 sonar1 = sonar.Sonar(trig=23, echo=24)
 sonar1.start()
 
-print(current_dir)
+iRobot = create.Create(serialPort)
+
+sensorArray = False
+
+robotController = control.Control(iRobot,piCam,sonar1,sensorArray)
+
+robotController.start()
+
 
 cherrypy.server.socket_host = '0.0.0.0'
 # cherrypy._cpconfig.Config(file= current_dir + "/cherrypyConfig.conf")
-
+cherrypy.log.screen = None
 conf = {
         '/':
         {'tools.staticdir.root': os.path.dirname(os.path.abspath(__file__))},
