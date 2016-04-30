@@ -47,30 +47,46 @@ class Sonar(threading.Thread):
 			GPIO.output(self.TRIG, True)
 			time.sleep(0.00001)
 			GPIO.output(self.TRIG, False)
-			pulse_start=1
+			pulse_start=time.time()
 			pulse_end=0
 
-			while GPIO.input(self.ECHO)==0:
-			  pulse_start = time.time()
+			while GPIO.input(self.ECHO)==0 and self.exitFlag == False:
+				if (time.time() - pulse_start) > 0.01:
+					print("sonar "+self.name+" error1")
+					break
+			pulse_start = time.time()
 
-			while GPIO.input(self.ECHO)==1:
-			  pulse_end = time.time()
+			while GPIO.input(self.ECHO)==1 and self.exitFlag == False:
+				if (pulse_end - pulse_start) > 0.01:
+					print("sonar "+self.name+" error2")
+					break	
+			
+			pulse_end = time.time()
+			
+			if (pulse_end > pulse_start):
+				self.currentDistance = round((pulse_end - pulse_start) * 17150, 2)
+			
+				
 
-			distance = round((pulse_end - pulse_start) * 17150, 2)
 
-			# log("Distance:"+str(distance) + "cm",10)
 
-			return distance
+			
 
 	def run(self):
 		while self.exitFlag == False:
-			self.currentDistance = self.getMeasurement()
-			utilities.log("sonar distance " + str(self.currentDistance))
+			#print("test1")
+			
+			self.getMeasurement()
+			# utilities.log("sonar distance " + str(self.currentDistance))
 			time.sleep(self.senseDelay)
+			
+			
 
 		GPIO.cleanup()
+		print("sonar done")
 
 	def stop(self):
+		print("stoping sonar")
 		self.exitFlag = True
 
 

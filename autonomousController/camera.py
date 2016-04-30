@@ -54,9 +54,13 @@ class Camera(threading.Thread):
 			# if the `q` key was pressed, break from the loop
 			if self.exitFlag == True:
 				break
+		
+		self.camera.close()
 
 	def stop(self):
+		print("stoping camera")
 		self.exitFlag = True
+
 
 
 if __name__ == '__main__':

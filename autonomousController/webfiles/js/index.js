@@ -1,6 +1,8 @@
 setInterval(function() {
     var myImageElement = document.getElementById('image1');
     myImageElement.src = '/getImage?random=' + Math.random();
+    
+    // $('#sonar').html("sonar")
 }, 500);
 
 document.onkeydown = checkKey;
@@ -34,4 +36,20 @@ function checkKey(e) {
         $.get("/turn?num=" + rotationalVel);
     }
 
+}
+
+
+function killall()
+{
+    $.get("/cleanslateprotocol");
+}
+
+function autoEnable()
+{
+    $.get("/auto?val=true");
+}
+
+function autoDisable()
+{
+    $.get("/auto?val=false");
 }
